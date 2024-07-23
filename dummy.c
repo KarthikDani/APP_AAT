@@ -18,23 +18,25 @@ const char* morse_code[] = {
 
 // Function to initialize GPIO for LED
 void GPIO_Init() {
-    LPC_GPIO2->FIODIR |= (1 << 0);  // Set P2.0 as output (assuming LED is connected to P2.0)
+		LPC_PINCON->PINSEL4 = 0x000000;  //Configure the PORT2 Pins as GPIO;
+    LPC_GPIO2->FIODIR |= (1 << 25);  // Set P2.0 as output (assuming LED is connected to P2.0)
 }
 
 // Function to toggle LED
 void LED_On() {
-    LPC_GPIO2->FIOSET = (1 << 0);
+    LPC_GPIO2->FIOSET = (1 << 25);
 }
 
 void LED_Off() {
-    LPC_GPIO2->FIOCLR = (1 << 0);
+    LPC_GPIO2->FIOCLR = (1 << 25);
 }
 
-void delay_ms(uint32_t ms) {
-    uint32_t count = SystemCoreClock / 1000 * ms;
-    while (count--) {
-        __NOP();
-    }
+void delay_ms(unsigned int ms)
+{
+    unsigned int i,j;
+
+    for(i=0;i<ms;i++)
+        for(j=0;j<2000;j++);
 }
 
 // Function to give LED output by iterating over each character in the string:
@@ -65,7 +67,7 @@ const char* get_morse_code(char c) {
 
 int main() {
     // Declare variables
-    char input[] = "HELLO WORLD 123";  // Example input
+    char input[] = "ABC";  // Example input
     char* p;
 
     // Initialize system and GPIO after variable declarations
